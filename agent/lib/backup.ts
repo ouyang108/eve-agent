@@ -41,5 +41,22 @@ export async function restoreFile(backupId: string, relativePath: string) {
   const backup = join(root, ".codecare", "backups", backupId);
   const target = resolveInsideWorkspace(relativePath);
   await mkdir(dirname(target), { recursive: true });
-  await copyFile(backup, target);
+  await copyFile(backup, target); // 复制备份文件到目标路径
+}
+
+// 检查某个备份是否存在
+/**
+ * 检查某个备份是否存在
+ * @param backupId 备份ID
+ * @returns 是否存在
+ */
+export async function backupExists(backupId: string) {
+  const root = getWorksapceRoot();
+  const backup = join(root, ".codecare", "backups", backupId);
+  try {
+    await access(backup);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
