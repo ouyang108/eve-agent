@@ -1,0 +1,51 @@
+{
+  // VS Code 调试配置：用于给 Eve agent、tools、lib 代码打断点。
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Eve Dev (no UI)",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/node_modules/eve/bin/eve.js",
+      "args": ["dev", "--no-ui", "--logs", "all"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Eve Dev (TUI)",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/node_modules/eve/bin/eve.js",
+      "args": ["dev", "--logs", "all", "--tools", "full"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Node Inspector",
+      "port": 9229,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true
+    }
+  ]
+}

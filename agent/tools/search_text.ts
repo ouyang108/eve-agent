@@ -113,3 +113,29 @@ function runRg(query: string, cwd: string): Promise<string> {
     });
   });
 }
+
+export default defineTool({
+  description:
+    "Search text in the workspace using ripgrep, with a Node.js fallback when rg is unavailable.",
+  inputSchema: z.object({
+    query: z.string().min(1).describe("The regex or plain text to search for."),
+    path: z
+      .string()
+      .default(".")
+      .describe("Workspace-relative directory to search."),
+  }),
+  // 在当前 workspace 的指定目录中搜索文本或正则，并返回匹配结果。
+  async execute({ query, path }) {
+    const cwd = resolveInsideWorkspace(path);
+    const output = await runRg(query, cwd);
+    await appendAudit({
+      type: "tool.search_text",
+      detail: { query, path, hasMatches: output.length > 0 },
+    });
+    // 限制返回长度，避免把 Agent 上下文撑爆。
+    return {
+      matches: output.slice(0, 20_000) || "No matches.",
+      truncated: output.length > 20_000,
+    };
+  },
+});

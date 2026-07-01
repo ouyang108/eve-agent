@@ -1,0 +1,38 @@
+[
+  {
+    "scope": "project",
+    "key": "tsconfig.target",
+    "value": "ESNext",
+    "confidence": 0.8,
+    "id": "6f7a9c0b-977e-4744-91c2-0b92f2e3b480",
+    "createdAt": "2026-07-01T03:56:17.541Z",
+    "updatedAt": "2026-07-01T03:56:17.541Z"
+  },
+  {
+    "scope": "project",
+    "key": "logging-system",
+    "value": "The project uses a custom audit logging system (agent/lib/audit.ts) that writes JSONL records to .codecare/audit.log via appendAudit(). Several tools log their operations to this file (inspect_project, run_safe_command, write_workspace_file, etc.). No console.log, console.warn, console.error, or other console.* calls exist in the codebase.",
+    "confidence": 0.8,
+    "id": "38268dd7-f22f-411d-b1ba-7a360fecb86b",
+    "createdAt": "2026-07-01T04:02:55.831Z",
+    "updatedAt": "2026-07-01T04:02:55.831Z"
+  },
+  {
+    "scope": "project",
+    "key": "typescript-target",
+    "value": "ES2022",
+    "confidence": 0.8,
+    "id": "f46c2af2-a191-4e50-9041-0387ccc8c4c9",
+    "createdAt": "2026-07-01T06:20:11.173Z",
+    "updatedAt": "2026-07-01T06:20:11.173Z"
+  },
+  {
+    "scope": "project",
+    "key": "security",
+    "value": ".env file exists with API keys but is properly gitignored via .gitignore (.env* pattern)",
+    "confidence": 1,
+    "id": "8a77057f-a4c6-43c6-b6f7-2d3f975bbd35",
+    "createdAt": "2026-07-01T06:28:06.116Z",
+    "updatedAt": "2026-07-01T06:28:06.116Z"
+  }
+]

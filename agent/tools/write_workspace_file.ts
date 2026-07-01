@@ -8,7 +8,7 @@ import { appendAudit } from "../lib/audit.js";
 import { backupFile } from "../lib/backup.js";
 import { resolveInsideWorkspace } from "../lib/workspace.js";
 import { dirname } from "path";
-import { mkdir } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 
 export default defineTool({
   description:
@@ -26,18 +26,19 @@ export default defineTool({
       const backupId = await backupFile(path);
       const filePath = resolveInsideWorkspace(path);
       await mkdir(dirname(filePath), { recursive: true });
+      await writeFile(filePath, content, "utf8");
       //  写入审计记录
       await appendAudit({
         type: "tool.write_workspace_file",
         detail: {
-          path: filePath,
+          path,
           reason,
           backupId,
           bytes: Buffer.byteLength(content, "utf8"),
         },
       });
       return {
-        path: filePath,
+        path,
         backupId,
         bytes: Buffer.byteLength(content, "utf8"),
         message: "File written. Run verification before finalizing.",

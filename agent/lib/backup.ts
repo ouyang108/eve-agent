@@ -24,7 +24,7 @@ export async function backupFile(relativePath: string) {
   }
 
   const backupId = `${Date.now()}-${relativePath.replace(/[\\/]/g, "__")}`;
-  const target = join(root, ".codecare", "backup", backupId);
+  const target = join(root, ".codecare", "backups", backupId);
 
   await mkdir(dirname(target), { recursive: true });
   await copyFile(source, target);
@@ -37,24 +37,45 @@ export async function backupFile(relativePath: string) {
  * @param relativePath 相对路径
  */
 export async function restoreFile(backupId: string, relativePath: string) {
-  const root = getWorksapceRoot();
-  const backup = join(root, ".codecare", "backups", backupId);
+  const backup = await resolveBackupPath(backupId);
   const target = resolveInsideWorkspace(relativePath);
   await mkdir(dirname(target), { recursive: true });
   await copyFile(backup, target); // 复制备份文件到目标路径
 }
 
-// 检查某个备份是否存在
 /**
- * 检查某个备份是否存在
+ * 解析备份文件路径。
+ * 同时兼容早期写错的 .codecare/backup 目录和现在正确的 .codecare/backups 目录。
+ * @param backupId 备份ID
+ * @returns 备份文件路径
+ */
+export async function resolveBackupPath(backupId: string) {
+  const root = getWorksapceRoot();
+  const candidates = [
+    join(root, ".codecare", "backups", backupId),
+    join(root, ".codecare", "backup", backupId),
+  ];
+
+  for (const candidate of candidates) {
+    try {
+      await access(candidate);
+      return candidate;
+    } catch {
+      // 继续检查下一个候选路径
+    }
+  }
+
+  throw new Error(`Backup not found: ${backupId}`);
+}
+
+/**
+ * 检查某个备份是否存在。
  * @param backupId 备份ID
  * @returns 是否存在
  */
 export async function backupExists(backupId: string) {
-  const root = getWorksapceRoot();
-  const backup = join(root, ".codecare", "backups", backupId);
   try {
-    await access(backup);
+    await resolveBackupPath(backupId);
     return true;
   } catch (error) {
     return false;
